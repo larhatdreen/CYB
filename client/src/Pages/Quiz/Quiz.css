@@ -1,0 +1,138 @@
+.quizPage {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    position: relative;
+    overflow-y: auto;
+    transition: all 0.3s ease-in-out;
+}
+
+.topPage {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: 24px;
+    padding: 0 16px;
+    padding-top: 75px;
+}
+
+.topPage h1 {
+    font-size: 24px;
+    color: #03001A;
+}
+
+.bottomPage {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border-radius: 16px 16px 0 0;
+    background: #fff;
+    padding: 0 16px 32px 16px;
+    flex: 1;
+    gap: 12px;
+}
+
+.quizContent {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    padding-top: 16px;
+    transition: all 150ms ease-in-out;
+}
+
+.name {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.name input {
+    background: #F2F2F2;
+    border: 1px solid #e6e6e6;
+    height: 36px;
+    padding: 0 14px;
+    font-size: 16px;
+    color: #0D0D0D;
+    border-radius: 14px;
+}
+
+.name input::placeholder {
+    color: #999999;
+}
+
+.titleInput {
+    font-size: 12px;
+    color: #0D0D0D;
+}
+
+.selectGender {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.genderBtn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 74px;
+    height: 36px;
+    background: #F2F2F2;
+    color: #0D0D0D;
+    transition: all 150ms ease-in-out;
+    border-radius: 14px;
+    font-size: 16px;
+}
+
+.genderBtn.active {
+    color: #F2F2F2;
+    background: #A799FF;
+}
+
+.quizOptions {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding-top: 8px;
+}
+
+.quizAnswer {
+    border: 1px solid #E6E6E6;
+    background: #F2F2F2;
+    border-radius: 14px;
+    height: 54px;
+    transition: all 150ms ease-in-out;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 8px;
+    padding: 0 8px;
+}
+
+.quizAnswer p {
+    color: #0D0D0D;
+    font-size: 14px;
+    transition: all 150ms ease-in-out;
+}
+
+.quizAnswer.active {
+    background: #A799FF;
+    border: 1px solid #A799FF
+}
+
+.quizAnswer.active p {
+    color: #F2F2F2;
+}
+
+.forBack {
+    position: absolute;
+    top: 16px;
+}
+
+.scaled-input {
+    transform-origin: top left;
+    transition: transform 0.2s ease;
+    z-index: 1000;
+    box-shadow: 0 0 15px rgba(0,0,0,0.1);
+  }

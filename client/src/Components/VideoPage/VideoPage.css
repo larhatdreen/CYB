@@ -1,0 +1,17 @@
+.videoPage {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    justify-content: space-between;
+}
+
+.videoInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.beginDescription {
+    font-size: 14px;
+    color: #0d0d0d;
+}

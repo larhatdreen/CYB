@@ -1,0 +1,81 @@
+.historyContainer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 66px;
+    border-radius: 16px;
+    background: #D3CCFF;
+    padding: 0 16px;
+    gap: 12px;
+}
+
+.historyInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.historyInfo p, .historyAction p {
+    color: #0D0D0D;
+    font-size: 12px;
+}
+
+.historyInfo span {
+    font-weight: 700;
+    font-size: 14px;
+    color: #0D0D0D;
+}
+
+.historyProgress {
+    height: 4px;
+    background: #F2F2F2;
+    border-radius: 50px;
+    overflow: hidden;
+}
+
+.historyProgress::-webkit-progress-bar {
+    background-color: #F2F2F2; 
+    border-radius: 50px; 
+}
+
+.historyProgress::-webkit-progress-value {
+    background-color: #A799FF; 
+    border-radius: 50px;
+    transition: all 0.150s ease-in-out; 
+}
+
+.historyProgress::-moz-progress-bar {
+    background-color: #A799FF; 
+    border-radius: 50px;
+}
+
+.progress[value] {
+    appearance: none; 
+}
+
+.historyProgress.instruction {
+    background: #E4E1FB;
+}
+.historyProgress.instruction::-webkit-progress-bar {
+    background: #E4E1FB;
+}
+
+.historyAction {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    height: 42px;
+    padding: 0 8px;
+    background: #F2F2F2;
+    border-radius: 45px;
+}
+
+.historyPlay {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 30px;
+    width: 30px;
+    border-radius: 50px;
+    background: #CBFF52;
+}

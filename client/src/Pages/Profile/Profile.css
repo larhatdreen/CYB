@@ -1,0 +1,356 @@
+.profilePage {
+    padding-top: 70px;
+    transition: all 150ms ease-in-out;
+}
+
+.profileContainer,
+.profileInfo,
+.howSize,
+.dataHave,
+.parameters,
+.photosContainerBefore,
+.recordYourProgress,
+.recordText,
+.solution,
+.profileName,
+.weeksContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.profile,
+.profileData,
+.example,
+.set,
+.sol,
+.recordBtn,
+.photosBefore,
+.uploadContainer,
+.uploadPlaceholderContainer {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.profileContainer {
+    background: #fff;
+    border-radius: 16px 16px 0 0;
+    padding: 16px 16px 32px 16px;
+}
+
+.profileName,
+.value,
+.before,
+.photoUploader,
+.inputGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.profileName p,
+.howSize h3,
+.parameters h3,
+.photosContainerBefore h3 {
+    font-size: 18px;
+    font-weight: 700;
+    color: #0D0D0D;
+}
+
+.profileName span,
+.parameters span,
+.before span,
+.recordText p,
+.photosContainerBefore p {
+    font-size: 12px;
+    color: #999999;
+}
+
+.set p,
+.solution p,
+.recordText p,
+.recordBtn p,
+.profileInfo p {
+    font-size: 14px;
+    color: #0D0D0D;
+}
+
+.settings {
+    background: #F2F2F2;
+    border-radius: 16px;
+    padding: 10px 16px;
+    cursor: pointer;
+    transition: all 150ms ease-in-out;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.set,
+.before,
+.inputPair,
+.loadPhotos,
+.photoUploader {
+    width: 100%;
+}
+
+.loadPhotos {
+    display: flex;
+}
+
+.set {
+    position: relative;
+}
+
+.toggle {
+    position: absolute;
+    right: 16px;
+    transition: all 150ms ease-in-out;
+}
+
+.zamer{
+    height: 320px;
+}
+
+.examplePhoto {
+    height: 380px;
+}
+
+.zamer img {
+    border-radius: 14px;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+}
+
+.examplePhoto img {
+    border-radius: 14px;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+}
+
+.profileInfo h4 {
+    color: #0D0D0D;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.solution p,
+.profileInfo p {
+    line-height: 120%;
+}
+
+.solution {
+    width: 40%;
+}
+
+.examplePhoto {
+    width: 60%;
+}
+
+.howSize {
+    padding-top: 8px;
+}
+
+.dot {
+    background: #A799FF;
+    border-radius: 50px;
+    width: 8px;
+    height: 8px;
+}
+
+.inputsSection {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.inputPair {
+    gap: 16px;
+    display: flex;
+}
+
+.inputGroup {
+    width: 50%;
+}
+
+.inputGroup label,
+.photoUploader label {
+    font-size: 14px;
+    color: #333;
+}
+
+.inputGroup input,
+.inputGroup select {
+    height: 46px;
+    border: 1px solid #e6e6e6;
+    background: #F2F2F2;
+    border-radius: 50px;
+    padding-left: 14px;
+}
+
+.inputGroup select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    border: none;
+    outline: none;
+    color: inherit;
+}
+
+.photoUploader input[type="file"] {
+    display: none;
+}
+
+.photoUploader {
+    gap: 4px;
+}
+
+.submitButton {
+    width: 100%;
+    padding: 15px;
+    background: #d4ff4d;
+    border: none;
+    border-radius: 25px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.submitButton:hover {
+    background: #c2e83a;
+}
+
+.uploadPlaceholderContainer,
+.uploadContainer {
+    justify-content: center;
+    width: 54px;
+    height: 54px;
+    border-radius: 4px;
+    background: #0D0D0D;
+    cursor: pointer;
+}
+
+.uploadContainer {
+    position: relative;
+}
+
+.uploadContainer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 4px;
+}
+
+.closePhoto {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.recordText h4 {
+    color: #0D0D0D;
+    font-weight: 700;
+    font-size: 14px;
+}
+
+.recordBtn {
+    justify-content: center;
+    height: 54px;
+    border-radius: 14px;
+    background: #F2F2F2;
+    border: 1px solid #E6E6E6;
+}
+
+.recordBtn:hover {
+    background: #C0C0C0;
+    border-color: #C0C0C0;
+}
+
+.parametersValues {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.param {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #F2F2F2;
+}
+
+.param:last-child {
+    border-bottom: none;
+}
+
+.forBefore {
+    position: relative;
+    height: 210px;
+    width: 100%;
+}
+
+.forBefore img {
+    width: 100%;
+    height: 100%;
+    border-radius: 6px;
+}
+
+.forEdit {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+}
+
+.previewImage {
+    width: 54px;
+    height: 54px;
+    object-fit: cover;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.weeks {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.week {
+    width: 100%;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #F2F2F2;
+    border: 1px solid #E6E6E6;
+    position: relative;
+    border-radius: 14px;
+}
+
+.week.past::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.5);
+    z-index: 1;
+}
+
+.week.active {
+    background-color: #A799FF;
+    border: 1px solid #A799FF;
+    color: #F2F2F2;
+}

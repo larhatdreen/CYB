@@ -1,0 +1,59 @@
+.navContainer {
+    position: sticky;
+    bottom: 0;
+    background: #F2F2F2;
+    height: 90px;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    z-index: 1000;
+}
+
+.navMenu {
+    display: flex;
+    align-items: center;
+    padding: 8px 8px 16px 8px;
+    width: 100%;
+}
+
+.forIcon {
+    background: #F2F2F2;
+    border-radius: 50px;
+    width: 50px;
+    height: 50px;
+    border: 1px solid #E6E6E6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 150ms ease-in-out;
+}
+
+.navLink {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    gap: 4px;
+    cursor: pointer;
+}
+
+.forIcon.active {
+    background: #CBFF52;
+    border: none;
+}
+
+.forIcon.pressed {
+    background: rgb(176, 176, 176);
+  }
+
+.nav {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    width: 100%;
+}
+
+.nav p {
+    font-size: 10px;
+    color: #0D0D0D;
+}

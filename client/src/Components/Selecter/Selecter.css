@@ -1,0 +1,43 @@
+.selecterContainer {
+    background: #F2F2F2;
+    border-radius: 45px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.forBackground {
+    position: relative;
+    display: flex;
+    align-items: center;
+    height: 44px;
+    width: calc(100% - 32px);
+}
+
+.selecter {
+    flex: 1;
+    font-size: 16px;
+    font-weight: 700;
+    color: #A799FF;
+    text-align: center;
+    transition: all 0.5s cubic-bezier(0.17, 0.72, 0.3, 1.04);
+    z-index: 1; 
+    background: none;
+    width: 100%;
+  }
+  
+  .selecter.active {
+    color: #fff; /* Цвет текста активного селектора */
+  }
+  
+  .selecterBackground {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    border-radius: 45px;
+    width: 50%; 
+    background: #A799FF; 
+    transition: all 0.5s cubic-bezier(0.17, 0.72, 0.3, 1.04); 
+    z-index: 0;
+  }

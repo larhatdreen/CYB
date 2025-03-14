@@ -1,0 +1,56 @@
+.pdfContainer {
+    position: relative;
+    min-height: 400px;
+}
+
+.pdfSlide {
+    height: 100%;
+    transition: opacity 0.3s ease-in-out;
+    border-radius: 14px;
+    position: relative;
+    z-index: 1;
+}
+
+.pdfSlide.fade {
+    opacity: 0;
+}
+
+.pdfImage {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.pdfButtons {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: absolute;
+    z-index: 2;
+    bottom: 16px;
+    width: calc(100% - 32px);
+    left: 16px;
+}
+
+.pdfButtons button {
+    border: 1px solid #E6E6E6;
+    background: #F2F2F2;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50px;
+    transition: all 0.2s;
+}
+
+.pdfButtons button:hover {
+    background: #A799FF;
+}
+
+.pdfButtons p {
+    color: #0D0D0D;
+    font-size: 14px;
+    font-weight: 700;
+}
