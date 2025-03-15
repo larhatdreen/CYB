@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route, Outlet, useLocation } from 'react-router-dom';
 import './App.css';
+import axios from "axios";
+import { API_BASE_URL } from './API';
 
 import ButtonClose from "./Components/Button/ButtonClose";
 import ButtonBack from "./Components/Button/ButtonBack";
@@ -59,15 +61,45 @@ function Layout() {
 }
 
 function App() {
-  const [user, setUser] = useState(null)
+  const [userId, setUserId] = useState(null)
+
   useEffect(() => {
     if (window.Telegram && window.Telegram.WebApp) {
       window.Telegram.WebApp.ready();
       window.Telegram.WebApp.expand();
-      const user = window.Telegram.WebApp.initDataUnsafe.user;
 
-      setUser(user)
-      console.log("Пользователь:", user);
+      const telegramUser = window.Telegram.WebApp.initDataUnsafe.user;
+
+      if (telegramUser) {
+        setUserId(telegramUser.id)
+        console.log("Пользователь Telegram:", telegramUser);
+
+        const addUserToDatabase = async () => {
+          try {
+            const userData = {
+              tg_id: telegramUser.id, 
+              name: telegramUser.first_name || 'Неизвестный', 
+              user_tarif: 0, 
+              transcation_id: 0, 
+              transcation_created_at: new Date().toISOString(),
+              photo: telegramUser.photo
+            };
+
+            const response = await axios.post(`${API_BASE_URL}/api/v1/user`, userData);
+
+            console.log('Пользователь успешно добавлен:', response.data);
+          } catch (error) {
+            console.error('Ошибка при добавлении пользователя:', error.response ? error.response.data : error.message);
+          }
+        };
+
+        // Вызываем функцию отправки
+        addUserToDatabase();
+      } else {
+        console.error('Пользователь Telegram не найден');
+      }
+    } else {
+      console.error('Telegram WebApp API не найден');
     }
   }, []);
 
@@ -80,15 +112,15 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Layout />}>
-          <Route index element={<StartPage />} />
-          <Route path="quiz" element={<Quiz />} />
-          <Route path="result" element={<Result />} />
-          <Route path="dashboard" element={<Dashboard user={user} />} />
-          <Route path="begin" element={<Begin />} />
-          <Route path="profile" element={<Profile />} />
-          <Route path="parameters" element={<Parameters />} />
-          <Route path="record" element={<Record />} />
-          <Route path="communication" element={<Communication />} />
+          <Route index element={<StartPage userId={userId} />} />
+          <Route path="quiz" element={<Quiz userId={userId} />} />
+          <Route path="result" element={<Result userId={userId} />} />
+          <Route path="dashboard" element={<Dashboard userId={userId} />} />
+          <Route path="begin" element={<Begin userId={userId} />} />
+          <Route path="profile" element={<Profile userId={userId} />} />
+          <Route path="parameters" element={<Parameters userId={userId} />} />
+          <Route path="record" element={<Record userId={userId} />} />
+          <Route path="communication" element={<Communication userId={userId} />} />
         </Route>
       </Routes>
     </BrowserRouter>

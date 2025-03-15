@@ -1,19 +1,18 @@
 import React, { useState, useRef, useEffect } from 'react';
 import './VideoViewer.css';
+import axios from 'axios';
+import { API_BASE_URL } from '../../API'; // Предполагаю, что у вас есть этот импорт
 
 import play from '../../Assets/svg/play.svg';
 import pause from '../../Assets/svg/pause.svg';
-// import fullscreen from '../../Assets/svg/fullscreen.svg';
-// import fullscreenExit from '../../Assets/svg/fullscreenExit.svg';
 
-const VideoViewer = ({ videoSrc }) => {
+const VideoViewer = ({ videoSrc, page, userId }) => {
   const videoRef = useRef(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
   const [currentTime, setCurrentTime] = useState('0:00');
   const [duration, setDuration] = useState('0:00');
   const [showPlayButton, setShowPlayButton] = useState(true);
-//   const [isExpanded, setIsExpanded] = useState(false);
 
   // Обновление прогресса и времени
   const updateProgress = () => {
@@ -38,6 +37,7 @@ const VideoViewer = ({ videoSrc }) => {
     if (videoRef.current) {
       if (isPlaying) {
         videoRef.current.pause();
+        sendVideoUpdate(); // Отправляем данные при паузе
       } else {
         videoRef.current.play();
       }
@@ -57,13 +57,25 @@ const VideoViewer = ({ videoSrc }) => {
     if (videoRef.current) videoRef.current.currentTime = newTime;
   };
 
-  // Полноэкранный режим через Telegram API
-//   const toggleExpand = () => {
-//     if (window.Telegram && window.Telegram.WebApp) {
-//       window.Telegram.WebApp.expand();
-//       setIsExpanded(true);
-//     }
-//   };
+  // Отправка данных на сервер
+  const sendVideoUpdate = async () => {
+    if (!videoRef.current || !userId) return;
+
+    const current = videoRef.current.currentTime;
+    const total = videoRef.current.duration;
+    const remainingTime = total - current; // Оставшееся время
+
+    try {
+      await axios.patch(`${API_BASE_URL}/api/v1/user/video`, {
+        user_tg_id: userId,
+        last_video: page, // Текущая страница, например '/begin'
+        last_video_time: remainingTime, // Оставшееся время в секундах
+      });
+      console.log('Видео прогресс обновлён:', { page, remainingTime });
+    } catch (error) {
+      console.error('Ошибка при обновлении видео прогресса:', error.message);
+    }
+  };
 
   // Обработчики событий
   useEffect(() => {
@@ -74,11 +86,13 @@ const VideoViewer = ({ videoSrc }) => {
         setDuration(formatTime(video.duration));
       });
 
+      // Отправка данных при выходе из компонента
       return () => {
         video.removeEventListener('timeupdate', updateProgress);
+        if (isPlaying) sendVideoUpdate(); // Отправляем, если видео было на паузе или воспроизводилось
       };
     }
-  }, []);
+  }, [isPlaying, page, userId]); // Зависимости для отправки при изменении
 
   return (
     <div className="videoViewer">
@@ -88,9 +102,6 @@ const VideoViewer = ({ videoSrc }) => {
         src={videoSrc}
         onClick={togglePlay}
       />
-      {/* <button className="fullscreenButton" onClick={toggleExpand}>
-          <img src={isExpanded ? fullscreenExit : fullscreen} alt="Режим полного экрана" />
-        </button> */}
       <button
         className="playButton"
         style={{ opacity: showPlayButton ? '1' : '0' }}

@@ -2,6 +2,8 @@ import React from 'react';
 import './Selecter.css'; // Добавим стили
 
 export default function Selecter({ bg, onClick, textOne, textTwo, activeIndex }) {
+
+    
     return (
         <div className="selecterContainer" style={{background: bg ? bg : ''}}>
             <div className="forBackground">

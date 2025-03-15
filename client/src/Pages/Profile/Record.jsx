@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Profile.css';
 import axios from 'axios';
+import { API_BASE_URL } from '../../API';
 
 import ProfileBtn from '../../Components/ProfileBtn/ProfileBtn';
 import Selecter from '../../Components/Selecter/Selecter';
@@ -12,7 +13,6 @@ import settings from '../../Assets/svg/settings.svg';
 import right from '../../Assets/svg/right.svg';
 import close from '../../Assets/svg/close.svg';
 
-// Компонент InputPair без поля "Пол"
 const InputPair = ({ labels, values, onChange, handleBlur, handleFocus }) => (
   <div className="inputPair" style={{ display: 'flex' }}>
     {labels.map((label, i) => (
@@ -20,7 +20,7 @@ const InputPair = ({ labels, values, onChange, handleBlur, handleFocus }) => (
         <label>{label}</label>
         <input
           type="text"
-          value={values[i]}
+          value={values[i] || ''}
           onChange={onChange(i)}
           placeholder="0"
           onFocus={handleFocus}
@@ -31,38 +31,63 @@ const InputPair = ({ labels, values, onChange, handleBlur, handleFocus }) => (
   </div>
 );
 
-export default function Record() {
+export default function Record({ userId }) {
   const [isMobile, setIsMobile] = useState(false);
   const formRef = useRef(null);
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
-  const [activeWeek, setActiveWeek] = useState(1);
+  const [activeWeek, setActiveWeek] = useState(null);
+  const [dataProfile, setDataProfile] = useState(null);
   const [formData, setFormData] = useState({
-    chest: '', waist: '', belly: '', hips: '', leg: '', weight: '',
+    chest: '',
+    waist: '',
+    abdominal_circumference: '',
+    hips: '',
+    legs: '',
+    weight: '',
   });
 
-  // Запрос для получения активной недели
   useEffect(() => {
-    const fetchActiveWeek = async () => {
+    const fetchUserDataProfile = async () => {
       try {
-        const response = await axios.get('/api/active-week');
-        setActiveWeek(parseInt(response.data.activeWeek, 10));
+        if (!userId) throw new Error('Не удалось получить Telegram ID');
+        const response = await axios.get(`${API_BASE_URL}/api/v1/user`, {
+          params: { user_tg_id: userId },
+        });
+        setDataProfile(response.data);
       } catch (error) {
-        console.error('Ошибка при получении активной недели:', error);
+        console.error('Ошибка при получении данных пользователя:', error.message);
       }
     };
-    fetchActiveWeek();
-  }, []);
 
-  // Определение платформы
-      useEffect(() => {
-          const tg = window.Telegram?.WebApp;
-          if (tg) {
-              const platform = tg.platform.toLowerCase();
-              setIsMobile(!['tdesktop', 'macos', 'linux', 'web'].includes(platform));
-          }
-      }, []);
+    const fetchActiveWeek = async () => {
+      try {
+        if (!userId) throw new Error('Не удалось получить Telegram ID');
+        const response = await axios.get(`${API_BASE_URL}/api/v1/user/week`, {
+          params: { user_tg_id: userId },
+        });
+        const weeks = response.data;
+        const active = Object.keys(weeks).find(
+          (key) => weeks[key] === true && key !== 'tg_id' && key !== 'id'
+        );
+        setActiveWeek(active ? parseInt(active.replace('week', ''), 10) || 1 : 1); // Преобразование 'one' -> 1
+      } catch (error) {
+        console.error('Ошибка при получении активной недели:', error.message);
+      }
+    };
+
+    fetchUserDataProfile();
+    fetchActiveWeek();
+  }, [userId]);
+
+  useEffect(() => {
+    const tg = window.Telegram?.WebApp;
+    if (tg) {
+      const platform = tg.platform.toLowerCase();
+      setIsMobile(!['tdesktop', 'macos', 'linux', 'web'].includes(platform));
+    }
+  }, []);
 
   const handleSelecterClick = (index) => {
     setActiveIndex(index);
@@ -73,47 +98,52 @@ export default function Record() {
   };
 
   const handleSubmit = async () => {
-    const data = new FormData();
-    Object.entries(formData).forEach(([key, value]) => {
-      if (value) data.append(key, value);
-    });
-    data.append('week', activeWeek); // Добавляем информацию о неделе
-
     try {
-      await axios.post('/api/record-progress', data, {
-        headers: { 'Content-Type': 'multipart/form-data' },
+      if (!userId) throw new Error('Не удалось получить Telegram ID');
+
+      const parametersData = {
+        tg_id: userId,
+        chest: parseFloat(formData.chest) || 0,
+        waist: parseFloat(formData.waist) || 0,
+        abdominal_circumference: parseFloat(formData.abdominal_circumference) || 0,
+        hips: parseFloat(formData.hips) || 0,
+        legs: parseFloat(formData.legs) || 0,
+        weight: parseFloat(formData.weight) || 0,
+        created_at: new Date().toISOString(),
+      };
+
+      await axios.post(`${API_BASE_URL}/api/v1/user_parametrs`, parametersData);
+
+      const weekNumber = activeWeek;
+      await axios.post(`${API_BASE_URL}/api/v1/user/week`, {
+        user_tg_id: userId,
+        week_number: weekNumber,
       });
-      console.log('Прогресс сохранён для недели', activeWeek);
+
+      console.log('Прогресс сохранён для недели', weekNumber);
       navigate('/profile');
     } catch (error) {
-      console.error('Ошибка при сохранении прогресса:', error);
+      console.error('Ошибка при сохранении данных:', error.message);
     }
   };
 
   const handleFocus = (e) => {
     if (!isMobile || !formRef.current) return;
-
     const input = e.target;
     const container = formRef.current;
-
     const containerRect = container.getBoundingClientRect();
     const inputRect = input.getBoundingClientRect();
-
     const relativeLeft = inputRect.left - containerRect.left;
     const relativeTop = inputRect.top - containerRect.top;
-
     const originX = (relativeLeft / containerRect.width) * 130;
     const originY = (relativeTop / containerRect.height) * 130;
-
     container.style.transformOrigin = `${originX}% ${originY}%`;
     container.style.transform = `scale(1.5)`;
     container.style.transition = 'transform 150ms ease-in-out';
-
-    const scrollOffset = inputRect.top - containerRect.top - (containerRect.height * 0.3);
-
+    const scrollOffset = inputRect.top - containerRect.top - containerRect.height * 0.3;
     container.scrollTo({
       top: container.scrollTop + scrollOffset,
-      behavior: 'smooth'
+      behavior: 'smooth',
     });
   };
 
@@ -124,11 +154,10 @@ export default function Record() {
     container.style.transition = 'transform 150ms ease-in-out';
   };
 
-  // Массив пар инпутов без пола и возраста
   const inputPairs = [
     { labels: ['Обхват груди', 'Обхват талии'], fields: ['chest', 'waist'] },
-    { labels: ['Обхват живота', 'Обхват бедер'], fields: ['belly', 'hips'] },
-    { labels: ['Обхват ноги', 'Вес'], fields: ['leg', 'weight'] },
+    { labels: ['Обхват живота', 'Обхват бедер'], fields: ['abdominal_circumference', 'hips'] },
+    { labels: ['Обхват ноги', 'Вес'], fields: ['legs', 'weight'] },
   ];
 
   return (
@@ -138,8 +167,8 @@ export default function Record() {
           <div className="profileData">
             <ProfileBtn />
             <div className="profileName">
-              <p>name</p>
-              <span>level</span>
+              <p>{dataProfile?.name || 'Имя'}</p>
+              <span>{dataProfile?.user_level || 'Уровень'}</span>
             </div>
           </div>
           <ButtonEdit onClick={() => navigate('/parameters')} />
@@ -179,8 +208,10 @@ export default function Record() {
               {[1, 2, 3, 4].map((weekNumber) => (
                 <div
                   key={weekNumber}
-                  className={`week ${weekNumber < activeWeek ? 'past' : ''} ${weekNumber === activeWeek ? 'active' : ''
-                    }`}
+                  className={`week ${weekNumber < activeWeek ? 'past' : ''} ${
+                    weekNumber === activeWeek ? 'active' : ''
+                  }`}
+                  onClick={() => setActiveWeek(weekNumber)}
                 >
                   {weekNumber}
                 </div>

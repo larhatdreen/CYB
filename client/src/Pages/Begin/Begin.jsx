@@ -9,7 +9,7 @@ import VideoPage from '../../Components/VideoPage/VideoPage';
 import health from '../../Assets/svg/health.svg';
 import begin from '../../Assets/video/begin.mp4'
 
-export default function Begin() {
+export default function Begin({ userId }) {
   const [videoView, setVideoView] = useState(false);
   const [activeIndex, setActiveIndex] = useState(videoView ? 1 : 0);
 
@@ -44,7 +44,7 @@ export default function Begin() {
         {!videoView ?
             <PDFViewer pdf_list={pdfList} />
             :
-            <VideoPage video={begin} />
+            <VideoPage video={begin} page='/begin' userId={userId} />
         }
       </div>
     </div>

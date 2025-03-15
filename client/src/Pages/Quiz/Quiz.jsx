@@ -4,6 +4,8 @@ import Progress from '../../Components/Progress/Progress';
 import Button from '../../Components/Button/Button';
 import ButtonBack from '../../Components/Button/ButtonBack';
 import { useNavigate } from 'react-router-dom';
+import { API_BASE_URL } from '../../API';
+import axios from 'axios';
 
 import a from '../../Assets/quiz/a.svg';
 import aa from '../../Assets/quiz/aa.svg';
@@ -18,7 +20,7 @@ import f from '../../Assets/quiz/f.svg';
 import ff from '../../Assets/quiz/ff.svg';
 import g from '../../Assets/quiz/g.svg';
 
-export default function Quiz() {
+export default function Quiz({ userId }) {
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [opacity, setOpacity] = useState(1);
@@ -33,65 +35,84 @@ export default function Quiz() {
   const [isMobile, setIsMobile] = useState(false);
   const formRef = useRef(null);
 
-  // Refs для полей ввода
   const nameRef = useRef(null);
   const telRef = useRef(null);
   const birthdayRef = useRef(null);
 
-  // Данные для шагов 2-8
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        if (!userId) throw new Error('Не удалось получить Telegram ID');
+        const response = await axios.get(`${API_BASE_URL}/api/v1/user`, {
+          params: { user_tg_id: userId },
+        });
+        setName(response.data.name || '');
+        setGen(response.data.sex || 'm');
+        setTel(response.data.phone || '');
+        setBirthday(response.data.born_date ? new Date(response.data.born_date).toLocaleDateString('ru-RU', {
+          day: '2-digit',
+          month: '2-digit',
+          year: 'numeric',
+        }).replace(/\//g, '.') : '');
+      } catch (error) {
+        console.error('Ошибка при получении данных пользователя:', error.message);
+      }
+    };
+    fetchUserData();
+  }, [userId]);
+
   const quizData = [
     {
       question: 'Обладаете ли вы достаточным уровнем знаний и пониманием выполнения базовых движений?',
       options: [
-        { text: 'Да, знаю технику и выполняю уверенно', img: a },
-        { text: 'Нет, не уверен(а) в технике', img: aa },
+        { text: 'Да, знаю технику и выполняю уверенно', img: a, level: 1 },
+        { text: 'Нет, не уверен(а) в технике', img: aa, level: 2 },
       ],
     },
     {
       question: 'Как часто вы тренировались в последние 3 месяца?',
       options: [
-        { text: 'Регулярно (3-5 раз в неделю)', img: b },
-        { text: 'Иногда (1-2 раза в неделю)', img: bb },
+        { text: 'Регулярно (3-5 раз в неделю)', img: b, level: 1 },
+        { text: 'Иногда (1-2 раза в неделю)', img: bb, level: 2 },
       ],
     },
     {
       question: 'Как вы оцениваете свою силу?',
       options: [
-        { text: 'Высокая', img: c },
-        { text: 'Средняя', img: cc },
+        { text: 'Высокая', img: c, level: 1 },
+        { text: 'Средняя', img: cc, level: 2 },
       ],
     },
     {
       question: 'Как оцениваете свою выносливость?',
       options: [
-        { text: 'Высокая', img: d },
-        { text: 'Средняя', img: dd },
+        { text: 'Высокая', img: d, level: 1 },
+        { text: 'Средняя', img: dd, level: 2 },
       ],
     },
     {
       question: 'Какой у вас уровень физической активности в повседневной жизни?',
       options: [
-        { text: 'Высокий', img: b },
-        { text: 'Средний', img: e },
+        { text: 'Высокий', img: b, level: 1 },
+        { text: 'Средний', img: e, level: 2 },
       ],
     },
     {
       question: 'Как вы чувствуете себя после тренировки?',
       options: [
-        { text: 'Энергичным', img: f },
-        { text: 'Уставшим', img: ff },
+        { text: 'Энергичным', img: f, level: 1 },
+        { text: 'Уставшим', img: ff, level: 2 },
       ],
     },
     {
       question: 'Какой уровень сложности тренировок вам комфортен?',
       options: [
-        { text: 'Высокий', img: g },
-        { text: 'Средний', img: dd },
+        { text: 'Высокий', img: g, level: 1 },
+        { text: 'Средний', img: dd, level: 2 },
       ],
     },
   ];
 
-  // Проверка даты рождения
   const isDateValid = (date) => {
     if (!/^(0[1-9]|[12][0-9]|3[01])\.(0[1-9]|1[012])\.(19|20)\d\d$/.test(date)) return false;
     const [day, month, year] = date.split('.').map(Number);
@@ -106,7 +127,6 @@ export default function Quiz() {
     return birthDate < minDate;
   };
 
-  // Обработчики ввода
   const handlePhoneChange = (e) => {
     let value = e.target.value.replace(/[^\d+]/g, '');
     if (value.length === 1) {
@@ -119,9 +139,8 @@ export default function Quiz() {
 
     setTel(value);
 
-    // Если достигнута максимальная длина, снимаем фокус
     if (value.length === maxLength && telRef.current) {
-      telRef.current.blur(); // Снимаем фокус, что вызовет onBlur
+      telRef.current.blur();
     }
   };
 
@@ -139,13 +158,11 @@ export default function Quiz() {
 
     setBirthday(newValue);
 
-    // Если достигнута максимальная длина, снимаем фокус
     if (newValue.length === 10 && birthdayRef.current) {
-      birthdayRef.current.blur(); // Снимаем фокус, что вызовет onBlur
+      birthdayRef.current.blur();
     }
   };
 
-  // Валидация
   useEffect(() => {
     if (step === 1) {
       const isNameValid = name.trim().length > 0;
@@ -169,31 +186,19 @@ export default function Quiz() {
 
   const handleFocus = (e) => {
     if (!isMobile) return;
-
+    setIsFocused(true);
     const input = e.target;
     const container = formRef.current;
-
-    // Получаем позиции элементов
     const containerRect = container.getBoundingClientRect();
     const inputRect = input.getBoundingClientRect();
-
-    // Рассчитываем относительные координаты инпута внутри контейнера
     const relativeLeft = inputRect.left - containerRect.left;
     const relativeTop = inputRect.top - containerRect.top;
-
-    // Вычисляем процентное положение для transformOrigin
     const originX = (relativeLeft / containerRect.width) * 130;
     const originY = (relativeTop / containerRect.height) * 130;
-
-    // Применяем масштабирование относительно позиции инпута
     container.style.transformOrigin = `${originX}% ${originY}%`;
     container.style.transform = `scale(1.3)`;
     container.style.transition = 'transform 0.3s ease';
-
-    // Рассчитываем смещение для прокрутки
     const scrollOffset = inputRect.top - containerRect.top - (containerRect.height * 0.3);
-
-    // Плавная прокрутка с учетом масштабирования
     container.scrollTo({
       top: container.scrollTop + scrollOffset,
       behavior: 'smooth',
@@ -202,13 +207,12 @@ export default function Quiz() {
 
   const handleBlur = () => {
     if (!isMobile) return;
-
+    setIsFocused(false);
     const container = formRef.current;
     container.style.transform = 'none';
     container.style.transition = 'transform 0.3s ease';
   };
 
-  // Переход на следующий шаг
   const handleNext = () => {
     if (step < 8) {
       setAnswers([...answers, selectedOption]);
@@ -220,12 +224,35 @@ export default function Quiz() {
       }, 150);
     } else {
       const finalAnswers = [...answers, selectedOption];
-      console.log('Отправка данных:', { name, gen, tel, birthday, answers: finalAnswers });
-      navigate('/result');
+      const countOnes = finalAnswers.filter((answer) => answer === 1).length;
+      const countTwos = finalAnswers.filter((answer) => answer === 2).length;
+      const userLevel = countOnes > countTwos ? 'pro' : 'newbie';
+
+      const [day, month, year] = birthday.split('.');
+      const formattedBirthday = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}T00:00:00.000Z`;
+
+      const sendData = async () => {
+        try {
+          if (!userId) throw new Error('Не удалось получить Telegram ID');
+          await axios.patch(`${API_BASE_URL}/api/v1/user`, {
+            tg_id: userId,
+            name,
+            born_date: formattedBirthday,
+            sex: gen === 'm' ? 'male' : 'female',
+            user_level: userLevel,
+            phone: tel,
+          });
+          console.log('Данные успешно обновлены');
+          navigate('/result');
+        } catch (error) {
+          console.error('Ошибка при обновлении данных:', error.message);
+        }
+      };
+
+      sendData();
     }
   };
 
-  // Переход на предыдущий шаг
   const handleBack = () => {
     if (step > 1) {
       setOpacity(0);
@@ -238,7 +265,6 @@ export default function Quiz() {
     }
   };
 
-  // Рендеринг контента
   const renderQuizContent = () => {
     if (step === 1) {
       return (
@@ -308,8 +334,8 @@ export default function Quiz() {
           {currentData.options.map((option, index) => (
             <button
               key={index}
-              className={`quizAnswer ${selectedOption === index ? 'active' : ''}`}
-              onClick={() => setSelectedOption(index)}
+              className={`quizAnswer ${selectedOption === option.level ? 'active' : ''}`}
+              onClick={() => setSelectedOption(option.level)}
             >
               <img src={option.img} alt="" />
               <p>{option.text}</p>
@@ -320,12 +346,10 @@ export default function Quiz() {
     }
   };
 
-  // Заголовок шага
   const getStepTitle = () => {
     return step === 1 ? 'Давайте знакомиться!' : quizData[step - 2].question;
   };
 
-  // Текст кнопки
   const buttonText = step === 8 ? 'Завершить' : 'Далее';
 
   return (
