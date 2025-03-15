@@ -165,7 +165,7 @@ export default function Record({ userId }) {
       <div className="profileContainer">
         <div className="profile" style={{ justifyContent: 'space-between' }}>
           <div className="profileData">
-            <ProfileBtn />
+            <ProfileBtn level={dataProfile.user_level} user_photo={dataProfile.image} />
             <div className="profileName">
               <p>{dataProfile?.name || 'Имя'}</p>
               <span>{dataProfile?.user_level || 'Уровень'}</span>

@@ -85,7 +85,7 @@ export default function Dashboard({ userId }) {
   return (
     <div className='dashboard'>
       <div className="dashTop">
-        <ProfileBtn level={userData.user_level} user_photo={userData.user_photo} />
+        <ProfileBtn level={userData.user_level} user_photo={userData.image} />
         <div className="hello">
           <h1>Привет, {userData?.name || 'Аркадий'}!</h1>
           <Progress count_all={0} count_complited={0} title='Прогресс тренировок' />

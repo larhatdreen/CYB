@@ -82,7 +82,7 @@ function App() {
               user_tarif: 0, 
               transcation_id: 0, 
               transcation_created_at: new Date().toISOString(),
-              photo: telegramUser.photo
+              image: telegramUser.photo_url
             };
 
             const response = await axios.post(`${API_BASE_URL}/api/v1/user`, userData);

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import './Communication.css'
 
 import ProfileBtn from '../../Components/ProfileBtn/ProfileBtn';
@@ -14,6 +14,7 @@ const TelegramLinkButton = ({ username, icon, buttonText = 'Перейти в Te
         tg.ready();
         const link = `https://t.me/${username}`; // Формируем ссылку на Telegram-аккаунт
         tg.openTelegramLink(link);
+
       } else {
         console.error('Telegram WebApp API недоступно. Убедитесь, что вы открыли приложение в Telegram.');
       }
@@ -31,11 +32,32 @@ const TelegramLinkButton = ({ username, icon, buttonText = 'Перейти в Te
     );
   };
 
-export default function Communication() {
+export default function Communication({ userId }) {
+  const [data, setData] = useState(null)
+  useEffect(() => {
+    if (window.Telegram && window.Telegram.WebApp) {
+      window.Telegram.WebApp.setBackgroundColor('#F2F2F2');
+    }
+
+    const fetchUserData = async () => {
+      try {
+        if (!userId) throw new Error('Не удалось получить Telegram ID');
+        const response = await axios.get(`${API_BASE_URL}/api/v1/user_parametrs`, {
+          params: { user_tg_id: userId },
+        });
+        setData(response.data);
+      } catch (err) {
+        console.error('Ошибка при получении параметров:', err.message);
+      }
+    };
+
+    fetchUserData();
+  }, [userId]);
+  
   return (
     <div className='comPage'>
         <div className="topCom">
-            <ProfileBtn />
+            <ProfileBtn level={data.user_level} user_photo={data.image} />
             <div className="comTitle">
                 <img src={chat} alt="Общение и поддержка" />
                 <h1>Общение и поддержка</h1>
